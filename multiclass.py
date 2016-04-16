@@ -161,7 +161,7 @@ class MCTree:
         self.f = []
         self.tree = tree
         for n in self.tree.iterNodes():
-            n.setNodeInfo(   mkClassifier()  )
+            n.setNodeInfo(mkClassifier())
 
     def train(self, X, Y):
         for n in self.tree.iterNodes():
@@ -175,8 +175,16 @@ class MCTree:
             print 'training classifier for', leftLabels, 'versus', rightLabels
 
             # compute the training data, store in thisX, thisY
-            ### TODO: YOUR CODE HERE
-            util.raiseNotDefined()
+            # TODO: YOUR CODE HERE
+            thisX = []
+            thisY = []
+            for index, y in enumerate(Y):
+                if y in leftLabels:
+                    thisX.append(X[index])
+                    thisY.append(-1)
+                elif y in rightLabels:
+                    thisX.append(X[index])
+                    thisY.append(1)
 
             try:
                 n.getNodeInfo().fit(thisX, thisY) # For sklearn implementations
@@ -184,14 +192,21 @@ class MCTree:
                 n.getNodeInfo().train(thisX, thisY) # For implementations of binary.py
 
     def predict(self, X):
-        ### TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        # TODO: YOUR CODE HERE
+        node = self.tree
+        while not node.isLeaf:
+            prob = node.getNodeInfo().predict_proba(X)
+            if prob[0, 1] > 0.5:
+                node = node.getRight()
+            else:
+                node = node.getLeft()
+        return node.label
 
     def predictAll(self, X):
-        N,D = X.shape
-        Y   = zeros((N,), dtype=int)
+        N, D = X.shape
+        Y = zeros((N,), dtype=int)
         for n in range(N):
-            Y[n] = self.predict(X[n,:])
+            Y[n] = self.predict(X[n, :])
         return Y
         
 def getMyTreeForWine():

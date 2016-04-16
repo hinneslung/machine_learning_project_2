@@ -5,4 +5,5 @@ import datasets,binary,dt,gd,knn,linear,mlGraphics,multiclass,runClassifier
 
 from sklearn.tree import DecisionTreeClassifier
 import multiclass
+import util
 from datasets import *
