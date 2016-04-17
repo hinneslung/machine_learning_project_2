@@ -64,7 +64,7 @@ class LogisticLoss(LossFunction):
         """
 
         ### TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+
 
 
     def lossGradient(self, X, Y, Yhat):
@@ -75,7 +75,7 @@ class LogisticLoss(LossFunction):
         """
 
         ### TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+
 
 
 class HingeLoss(LossFunction):
@@ -90,7 +90,15 @@ class HingeLoss(LossFunction):
         """
 
         ### TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        s = 0
+        try:
+            iter(Y)
+        except TypeError, te:
+            return 0
+        for index, y in Y:
+            a = 1 - y * Yhat[index]
+            s = s if a < 0 else (s + a)
+        return s
 
     def lossGradient(self, X, Y, Yhat):
         """
@@ -100,7 +108,11 @@ class HingeLoss(LossFunction):
         """
 
         ### TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        s = 0
+        for index, y in Y:
+            s = s if (y * Yhat[index]) >= 1 else (s - y * X[index])
+        return s
+
 
 
 class LinearClassifier(BinaryClassifier):
@@ -164,17 +176,31 @@ class LinearClassifier(BinaryClassifier):
         """
 
         # get the relevant options
-        lossFn   = self.opts['lossFunction']         # loss function to optimize
-        lambd    = self.opts['lambda']               # regularizer is (lambd / 2) * ||w||^2
-        numIter  = self.opts['numIter']              # how many iterations of gd to run
-        stepSize = self.opts['stepSize']             # what should be our GD step size?
+        lossFn   = self.opts['lossFunction']  # loss function to optimize
+        lambd    = self.opts['lambda']        # regularizer is (lambd / 2) * ||w||^2
+        numIter  = self.opts['numIter']       # how many iterations of gd to run
+        stepSize = self.opts['stepSize']      # what should be our GD step size?
 
         # define our objective function based on loss, lambd and (X,Y)
         def func(w):
             # should compute obj = loss(w) + (lambd/2) * norm(w)^2
-            Yhat = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+            # TODO: YOUR CODE HERE
+            Yhat = []
+            for x in X:
+                if type(w) == int:
+                    Yhat.append(0)
+                else:
+                    Yhat.append(dot(w, x))
 
-            obj  = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+            Yhat = np.array(Yhat)
+
+            print w
+            print x
+            print dot(w, x)
+            print Yhat
+
+            # TODO: YOUR CODE HERE
+            obj = lossFn.loss(Y, Yhat) + ((lambd / 2) * (norm(w))**2)
 
             # return the objective
             return obj
@@ -182,9 +208,18 @@ class LinearClassifier(BinaryClassifier):
         # define our gradient function based on loss, lambd and (X,Y)
         def grad(w):
             # should compute gr = grad(w) + lambd * w
-            Yhat = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+            # TODO: YOUR CODE HERE
+            Yhat = []
+            for x in X:
+                if type(w) == int:
+                    Yhat.append(0)
+                else:
+                    Yhat.append(dot(w, x))
 
-            gr   = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+            Yhat = np.array(Yhat)
+
+            # TODO: YOUR CODE HERE
+            gr = lossFn.lossGradient(X, Y, Yhat) + lambd * w
 
             return gr
 

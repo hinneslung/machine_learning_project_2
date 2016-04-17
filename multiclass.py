@@ -196,10 +196,7 @@ class MCTree:
         node = self.tree
         while not node.isLeaf:
             prob = node.getNodeInfo().predict_proba(X)
-            if prob[0, 1] > 0.5:
-                node = node.getRight()
-            else:
-                node = node.getLeft()
+            node = node.getRight() if prob[0, 1] > 0.5 else node.getLeft()
         return node.label
 
     def predictAll(self, X):
