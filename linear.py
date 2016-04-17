@@ -69,7 +69,7 @@ class LogisticLoss(LossFunction):
         for y in Y:
             a = log(1 + exp(- y * Yhat[index]))
             s = s if a < 0 else (s + a)
-            index += index
+            index += 1
         return s
 
 
@@ -106,7 +106,7 @@ class HingeLoss(LossFunction):
         for y in Y:
             a = 1 - y * Yhat[index]
             s = s if a < 0 else (s + a)
-            index += index
+            index += 1
         return s
 
     def lossGradient(self, X, Y, Yhat):
