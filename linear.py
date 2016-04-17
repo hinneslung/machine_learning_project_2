@@ -64,7 +64,13 @@ class LogisticLoss(LossFunction):
         """
 
         ### TODO: YOUR CODE HERE
-
+        s = 0
+        index = 0
+        for y in Y:
+            a = log(1 + exp(- y * Yhat[index]))
+            s = s if a < 0 else (s + a)
+            index += index
+        return s
 
 
     def lossGradient(self, X, Y, Yhat):
@@ -75,7 +81,12 @@ class LogisticLoss(LossFunction):
         """
 
         ### TODO: YOUR CODE HERE
-
+        s = 0
+        index = 0
+        for y in Y:
+            s += - X[index] * y / (exp(Yhat[index] * y) + 1)
+            index += 1
+        return s
 
 
 class HingeLoss(LossFunction):
@@ -91,13 +102,11 @@ class HingeLoss(LossFunction):
 
         ### TODO: YOUR CODE HERE
         s = 0
-        try:
-            iter(Y)
-        except TypeError, te:
-            return 0
-        for index, y in Y:
+        index = 0
+        for y in Y:
             a = 1 - y * Yhat[index]
             s = s if a < 0 else (s + a)
+            index += index
         return s
 
     def lossGradient(self, X, Y, Yhat):
@@ -109,8 +118,10 @@ class HingeLoss(LossFunction):
 
         ### TODO: YOUR CODE HERE
         s = 0
-        for index, y in Y:
+        index = 0
+        for y in Y:
             s = s if (y * Yhat[index]) >= 1 else (s - y * X[index])
+            index += 1
         return s
 
 
@@ -193,11 +204,6 @@ class LinearClassifier(BinaryClassifier):
                     Yhat.append(dot(w, x))
 
             Yhat = np.array(Yhat)
-
-            print w
-            print x
-            print dot(w, x)
-            print Yhat
 
             # TODO: YOUR CODE HERE
             obj = lossFn.loss(Y, Yhat) + ((lambd / 2) * (norm(w))**2)
